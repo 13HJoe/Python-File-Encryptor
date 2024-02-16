@@ -14,7 +14,7 @@ if sys.argv[1] == '-h' or sys.argv[1] == '-help':
   '''
   print("Syntax - 'file.py -e unencrypted.txt  key'\n")
   print("       - 'file.py -d encrypted.txt  key decryptedFile' \n") 
-  print("=> key : length = 16") 
+  print("=> key : length = 16 [The length of the 16 must only be 16 characters]") 
   exit(0)
 #---------------------------------------------------------#
 #---------------------------------------------------------#
@@ -29,7 +29,9 @@ if(sys.argv[1]=="-e"):
   filename = sys.argv[2]
   with open(filename, 'rb') as file: #'rb' opens file; -Read-Binary mode
     data = file.read()
-  #os.remove(filename) #remove sensitive unencrypted file
+  del_option = input("Delete Unencrypted File? Y/N \n ->")
+  if(del_option=="Y"):
+  	os.remove(filename) #remove sensitive unencrypted file
   #Instance of Cipher
   cipher = AES.new(key, AES.MODE_ECB)
   padded_data = pad(data, AES.block_size)
