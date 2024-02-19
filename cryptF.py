@@ -36,10 +36,11 @@ if(sys.argv[1]=="-e"):
   cipher = AES.new(key, AES.MODE_ECB)
   padded_data = pad(data, AES.block_size)
   ciphertext = cipher.encrypt(padded_data)
-  #Write Ciphertext(binary format) to binary file
-  with open('crptd.bin', 'wb') as file:
+  #Write Ciphertext(binary format) to binary file 
+  newfile = sys.argv[2]+".bin"
+  with open(newfile, 'wb') as file:
     file.write(ciphertext)
-  print("Encrypted Data -> crptd.bin")
+  print("Encrypted Data -> ",newfile)
 
 #---------------------------------------------------------#
 #---------------------------------------------------------#
@@ -50,9 +51,11 @@ else:
     ciphertext = file.read()
   decipher = AES.new(key, AES.MODE_ECB)
   decrypted_data = decipher.decrypt(ciphertext)
-  with open("out.txt", 'wb') as file: #'wb' opens file; Write-Binary mode
+  endIndex = len(filename)-4
+  newfile = filename[0:endIndex]
+  with open(newfile, 'wb') as file: #'wb' opens file; Write-Binary mode
     file.write(decrypted_data)
-  print("Decrypted Data -> out.txt")
+  print("Decrypted Data -> ",newfile)
   #OPTION - Delete Source File
   option = input("Delete Original File? Y/N \n->")
   if option == 'Y':
