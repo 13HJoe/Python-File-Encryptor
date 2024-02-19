@@ -4,6 +4,12 @@ import os
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
+
+if(len(sys.argv)<=1):
+ print("Invalid Usage")
+ print("Use <cryptF -h OR -help> for information")
+ exit(0)
+
 #---------------------------------------------------------#
 #---------------------------------------------------------#
 if sys.argv[1] == '-h' or sys.argv[1] == '-help':
@@ -12,8 +18,8 @@ if sys.argv[1] == '-h' or sys.argv[1] == '-help':
     help_data = file.read()
     print(help_data)
   '''
-  print("Syntax - 'file.py -e unencrypted.txt  key'\n")
-  print("       - 'file.py -d encrypted.txt  key decryptedFile' \n") 
+  print("Syntax - 'cryptF -e unencrypted.txt  key'\n")
+  print("       - 'cryptF -d encrypted.txt  key decryptedFile' \n") 
   print("=> key : length = 16 [The length of the 16 must only be 16 characters]") 
   exit(0)
 #---------------------------------------------------------#
@@ -36,7 +42,7 @@ if(sys.argv[1]=="-e"):
   cipher = AES.new(key, AES.MODE_ECB)
   padded_data = pad(data, AES.block_size)
   ciphertext = cipher.encrypt(padded_data)
-  #Write Ciphertext(binary format) to binary file 
+  #Write Ciphertext(binary format) to binary file
   newfile = sys.argv[2]+".bin"
   with open(newfile, 'wb') as file:
     file.write(ciphertext)
@@ -45,14 +51,14 @@ if(sys.argv[1]=="-e"):
 #---------------------------------------------------------#
 #---------------------------------------------------------#
 #Decryption Flag
-else:
+elif sys.argv[1] == "-d":
   filename = sys.argv[2]
   with open(filename, 'rb') as file:
     ciphertext = file.read()
   decipher = AES.new(key, AES.MODE_ECB)
   decrypted_data = decipher.decrypt(ciphertext)
-  endIndex = len(filename)-4
-  newfile = filename[0:endIndex]
+  endIndex = len(filename)
+  newfile = filename[0:endIndex-4]
   with open(newfile, 'wb') as file: #'wb' opens file; Write-Binary mode
     file.write(decrypted_data)
   print("Decrypted Data -> ",newfile)
@@ -61,3 +67,9 @@ else:
   if option == 'Y':
     os.remove(filename)
     print("File removed successfully")
+
+#---------------------------------------------------------#
+else:
+ print("Invalid Usage")
+ print("Use <cryptF -h OR -help> for information")
+ exit(0)
