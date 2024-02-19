@@ -1,14 +1,12 @@
 # Python-File-Encryptor
-Basic file encryption script
+Basic text-file encryption script[AES-ECB]
 
-Mode of Block Cipher Encryption used - ECB
-
-To use as a Shell Command
--> Create ".bat" file with name "cryptF"
-_cryptF.bat_
-`@echo off`
-`python C:\<path-to-python-script>\cryptF.py %*`
--> Add the current working directory to System ENV PATH variables [cmd.exe]
--> Run powershell as administrator
-  -> PowerShell Command `$env:PATH+=";C:\<working-directory>`
+**To use as a Shell Command**<br>
+-> Create ".bat" file with name "cryptF"<br>
+_cryptF.bat_<br>
+`@echo off`<br>
+`python C:\<path-to-python-script>\cryptF.py %*`<br><br>
+-> Add the current working directory to System ENV PATH variables [cmd.exe]<br>
+-> Run powershell as administrator<br>
+-> PowerShell Command `$env:PATH+=";C:\<working-directory>`
 
