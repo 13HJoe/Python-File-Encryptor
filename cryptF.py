@@ -1,6 +1,7 @@
 import sys
 import os
 import hashlib
+import maskpass
 from termcolor import colored
 
 from Crypto.Cipher import AES
@@ -26,8 +27,9 @@ if sys.argv[1] == "-h" or sys.argv[1] == "-help":
 # ---------------------------------------------------------#
 # ---------------------------------------------------------#
 
-keyString = sys.argv[3]  # Extract key from the command line
-key = keyString.encode("utf-8")  # Encode key to binary data
+key = maskpass.askpass(prompt="Key:", mask="#")
+#keyString = sys.argv[3]  # Extract key from the command line
+key = key.encode("utf-8")  # Encode key to binary data
 #key_bytes = bytes(key,"utf-8")
 # ---------------------------------------------------------#
 # ---------------------------------------------------------#
@@ -94,4 +96,3 @@ else:
     print("Invalid Usage")
     print("Use <cryptF -h OR -help> for information")
     exit(0)
-
