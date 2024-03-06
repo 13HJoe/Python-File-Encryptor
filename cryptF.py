@@ -62,14 +62,14 @@ if sys.argv[1] == "-e":
 # Decryption Flag
 elif sys.argv[1] == "-d":
     filename = sys.argv[2]
+
     key_hash_filename = filename[:-8]+"keyHash.txt"
     with open(key_hash_filename,'r') as key_hash_file:
         hash = key_hash_file.read().encode('utf-8')
         currentInputHash = hashlib.sha256(key).hexdigest()
         if(hash!=currentInputHash.encode('utf-8')):
-            print(hash)
-            print(currentInputHash,' ',key)
             print(colored("Wrong Key","red"))
+            sys.exit(0)
         else:
             print(colored("Correct Key","light_green"))
     os.remove(key_hash_filename)
@@ -94,3 +94,4 @@ else:
     print("Invalid Usage")
     print("Use <cryptF -h OR -help> for information")
     exit(0)
+
