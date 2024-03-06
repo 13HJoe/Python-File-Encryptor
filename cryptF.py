@@ -27,7 +27,7 @@ if sys.argv[1] == "-h" or sys.argv[1] == "-help":
 # ---------------------------------------------------------#
 # ---------------------------------------------------------#
 
-key = maskpass.askpass(prompt="Key:", mask="#")
+key = maskpass.askpass(prompt="Key:", mask="*")
 #keyString = sys.argv[3]  # Extract key from the command line
 key = key.encode("utf-8")  # Encode key to binary data
 #key_bytes = bytes(key,"utf-8")
