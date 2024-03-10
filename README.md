@@ -1,5 +1,5 @@
 # Python-File-Encryptor
-Basic text-file encryption script[AES-ECB]
+File Encryption Tool - Implementing AES-ECB
 
 **To use as a Shell Command**<br>
 -> Create ".bat" file with name "cryptF"<br>
