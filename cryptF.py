@@ -5,7 +5,7 @@ import hashlib
 import maskpass
 from termcolor import colored
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
+from Crypto.Util.Padding import pad, unpad
 # ---------------------------------------------------------#
 if sys.argv[1] == "-h" or sys.argv[1] == "-help":
     print("Syntax - 'cryptF -e unencrypted.txt  key'\n")
@@ -74,6 +74,7 @@ elif flag == "-d":
         ciphertext = file.read()
     decipher = AES.new(key, AES.MODE_ECB)
     decrypted_data = decipher.decrypt(ciphertext)
+    decrypted_data = unpad(decrypted_data, AES.block_size)
     endIndex = len(filename)
     newfile = filename[0 : endIndex - 4]
     with open(newfile, "wb") as file:  #'wb' opens file; Write-Binary mode
@@ -84,4 +85,4 @@ elif flag == "-d":
     if option == "Y":
         os.remove(filename)
         print(colored("File removed successfully","light_green"))
-        print(colored("Be sure to remove padded data","light_yellow"))
+        #print(colored("Be sure to remove padded data","light_yellow"))
