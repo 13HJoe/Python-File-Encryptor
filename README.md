@@ -13,5 +13,5 @@ File Encryption Tool - Implementing AES-ECB
     ```Powershell
     $env:PATH+=";C:\<working-directory>
     ```
-![Screenshot 2024-08-28 115123](https://github.com/user-attachments/assets/1a50c7d9-814b-4a41-8e14-32004aff3cc4)
+    ![Screenshot 2024-08-28 115123](https://github.com/user-attachments/assets/1a50c7d9-814b-4a41-8e14-32004aff3cc4)
 
