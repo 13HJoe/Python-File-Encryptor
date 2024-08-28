@@ -10,7 +10,7 @@ from Crypto.Util.Padding import pad, unpad
 if sys.argv[1] == "-h" or sys.argv[1] == "-help":
     print("Syntax - 'cryptF -e unencrypted.txt  key'\n")
     print("       - 'cryptF -d encrypted.txt  key decryptedFile' \n")
-    print("=> key : length = 16 [The length of the 16 must only be 16 characters]")
+    print("=> key : length = 16 [The length of the key must only be 16 characters]")
     exit(0)
 #---------------------------------------------------------#
 if len(sys.argv) <= 1:
