@@ -42,26 +42,15 @@ class AES:
         else:
             res += str(j)
         return res
-
-    def get_int(self, x):
-        if x < 'a':
-            return int(x)
-        temp_dict = {'a' : 10,
-                     'b' : 11,
-                     'c' : 12,
-                     'd' : 13,
-                     'e' : 14,
-                     'f' : 15,}
-        return temp_dict[x]
-
+    
 
     def gen_INVERSE_SBOX(self):
         inv_sbox = [[ hex(0)  for _ in range(16)] for _ in range(16)]
         for i in range(16):
             for j in range(16):
                 val = str(self.sbox[i][j])
-                x = self.get_int(val[2])
-                y = self.get_int(val[3])
+                x = int(val[2], 16)
+                y = int(val[3], 16)
                 #print(type(inv_sbox[i][j]))
                 inv_sbox[x][y] = self.get_hex_str_direct(i,j)
         return inv_sbox
@@ -76,8 +65,6 @@ class AES:
 st = AES(123,AES.ECB)
 for line in st.inv_sbox:
     print(line)
-
-
 ''''
 state1 = [0x47, 0x40, 0xa3, 0x4c,
           0x37, 0xd4, 0x70, 0x9f,
