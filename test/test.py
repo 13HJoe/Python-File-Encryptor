@@ -1,12 +1,69 @@
 import random
 
+class InvalidKeyLengthError(Exception):
+    def __init__(self):
+        self.message = "Invalid Key Length \nAES128 key length must be 16 bytes only"
+        Exception.__init__(self, self.message)
 
 class AES:
     def __init__(self) -> None:
         return None
 
+    
+    def state_from_bytes(self, data):
+        pass
+
+    def key_expansion(self, key):
+        pass
+
+    def add_round_key(self, state, key_schedule, round):
+        pass
+
+    #----------------------------------------------------------------#
+    # OPS
+    def sub_bytes(self, state):
+        pass
+
+    def shift_rows(self, state):
+        pass
+
+    def mix_columns(self, state):
+        pass
+
+
+    #----------------------------------------------------------------#
+
     def encrypt(self, plaintext: bytes, key: bytes) -> bytes:
+        
+        state = self.state_from_bytes(None)
+
+        key_schedule = self.key_expansion(None)
+
+        self.add_round_key(state, key_schedule, round=0)
+        
+        key_length = len(key) * 8 # in bits
+
+        num_of_rounds = -1
+        if key_length == 128:
+            num_of_rounds = 10
+        elif key_length == 192:
+            num_of_rounds = 12
+        elif key_length == 256: 
+            num_of_rounds = 14
+        else:
+            raise InvalidKeyLengthError
+        
+
+
+        for round in range(1, num_of_rounds):
+            self.sub_bytes(state)
+            self.shift_rows(state)
+            self.mix_columns(state)
+            self.add_round_key(state, key_schedule, round)
+
         return b''
+
+        
 
 if __name__ == "__main__":
 
@@ -41,23 +98,6 @@ if __name__ == "__main__":
     ciphertext = aes_cipher.encrypt(plaintext, key)
 
     assert (ciphertext == expected_ciphertext)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
