@@ -9,12 +9,20 @@ class AES:
     def __init__(self) -> None:
         return None
 
-    
-    def state_from_bytes(self, data):
-        pass
+    def bytes_from_state(self, state: list[list[int]]) -> bytes:
+        ret_bytes = bytes(state[0] + state[1] + state[2] + state[3])
+        return ret_bytes
+        
 
-    def key_expansion(self, key):
-        pass
+    def state_from_bytes(self, data: bytes) -> list[list[int]]:
+        state = [data[i*4:(i+1)*4] for i in range(len(data) // 4)]
+        return state
+
+    def key_expansion(self, key: bytes, nb: int = 4) -> list[list[list[4]]]:
+
+        w = self.state_from_bytes(key)
+
+        return [w[] for i in range(len(w // 4))]
 
     def add_round_key(self, state, key_schedule, round):
         pass
@@ -61,9 +69,16 @@ class AES:
             self.mix_columns(state)
             self.add_round_key(state, key_schedule, round)
 
-        return b''
+
+        self.sub_bytes(state)
+        self.shift_rows(state)
+        self.add_round_key(state, key_schedule, round=num_of_rounds)
 
         
+        ciphertext = self.bytes_from_state(None)
+
+        return ciphertext
+
 
 if __name__ == "__main__":
 
