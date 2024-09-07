@@ -25,7 +25,7 @@ class AES:
                             '8c a1 89 0d bf e6 42 68 41 99 2d 0f b0 54 bb 16'
         
         self.s_box_string = self.s_box_string.replace(" ","")
-        self.s_box_string = bytearray.fromhex(self.s_box_string)
+        self.s_box = bytearray.fromhex(self.s_box_string)
 
     def bytes_from_state(self, state: list[list[int]]) -> bytes:
         ret_bytes = bytes(state[0] + state[1] + state[2] + state[3])
@@ -37,7 +37,7 @@ class AES:
         return state
 
     def sub_word(self, word: list[int]) -> list[int]:
-        substituted_word = bytes(self.s_box_string[i] for i in word)
+        substituted_word = bytes(self.s_box[i] for i in word)
         return substituted_word
     
     def rot_word(self, word: list) -> list:
@@ -45,11 +45,17 @@ class AES:
         return word
     
 
+    def xor_bytes(self, a: bytes, b: bytes) -> bytes:
+        return bytes([x ^ y for x,y in zip(a, b)])
+
+
     # round constant
     def rcon(i: int) -> bytes:
          rcon_lookup = bytearray.fromhex("01020408102040801B36")
          rcon_value = bytes(rcon_lookup[i-1], 0, 0 ,0)
          return rcon_value
+    
+
 
     def key_expansion(self, key: bytes, nr:int, nb: int = 4) -> list[list[list[4]]]:
 
@@ -68,22 +74,34 @@ class AES:
 
         return [w[i*4:(i+1)*4] for i in range(len(w // 4))]
 
-    def add_round_key(self, state, key_schedule, round):
-        pass
+    #-----------------------------------------------------------------------------#
+    def add_round_key(self, state:list[list[int]], key_schedule: list[list[int]], round: int):
+        round_key = key_schedule[round]
+        
+        for (a,b) in zip(state, round_key):
+            for (i,j) in zip(a,b):
+                i = i ^ j
+        
+        return state
 
-    #----------------------------------------------------------------#
-    # OPS
-    def sub_bytes(self, state):
-        pass
+    def sub_bytes(self, state: list[list[int]]):
+        for r in range(len(state)):
+            state[r] = [self.s_box[r][c] for c in range(len(state[0]))]
+        
+        return state
 
-    def shift_rows(self, state):
-        pass
+    def shift_rows(self, state: list[list[int]]):
+
+        state[0][1], state[1][1], state[2][1], state[3][1] = state[1][1], state[2][1], state[3][1], state[0][1] 
+                
+        state[0][2], state[1][2], state[2][2], state[3][2] = state[2][2], state[3][2], state[0][2], state[1][2] 
+
+        state[0][3], state[1][3], state[2][3], state[3][3] = state[3][3], state[0][3], state[1][3], state[2][3] 
+
 
     def mix_columns(self, state):
         pass
-
-
-    #----------------------------------------------------------------#
+    #------------------------------------------------------------------------------#
 
     def encrypt(self, plaintext: bytes, key: bytes) -> bytes:
         
