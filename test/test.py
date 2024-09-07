@@ -1,6 +1,70 @@
 import random
 
 
+class AES:
+    def __init__(self) -> None:
+        return None
+
+    def encrypt(self, plaintext: bytes, key: bytes) -> bytes:
+        return b''
+
+if __name__ == "__main__":
+
+    # NIST AES-128 test C1.
+    plaintext = bytearray.fromhex("00112233445566778899aabbccddeeff")
+    key = bytearray.fromhex("000102030405060708090a0b0c0d0e0f")
+    expected_ciphertext = bytearray.fromhex("69c4e0d86a7b0430d8cdb78070b4c55a")
+    aes_cipher = AES()
+    ciphertext = aes_cipher.encrypt(plaintext, key)
+
+    assert (ciphertext == expected_ciphertext)
+
+
+
+    # NIST AES-192 test C2.
+    plaintext = bytearray.fromhex("00112233445566778899aabbccddeeff")
+    key = bytearray.fromhex("000102030405060708090a0b0c0d0e0f1011121314151617")
+    expected_ciphertext = bytearray.fromhex("dda97ca4864cdfe06eaf70a0ec0d7191")
+    aes_cipher = AES()
+    ciphertext = aes_cipher.encrypt(plaintext, key)
+
+    assert (ciphertext == expected_ciphertext)
+
+
+
+
+    # NIST AES-256 test C3.
+    plaintext = bytearray.fromhex("00112233445566778899aabbccddeeff")
+    key = bytearray.fromhex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f")
+    expected_ciphertext = bytearray.fromhex("8ea2b7ca516745bfeafc49904b496089")
+    aes_cipher = AES()
+    ciphertext = aes_cipher.encrypt(plaintext, key)
+
+    assert (ciphertext == expected_ciphertext)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+
 class InvalidKeyLengthError(Exception):
     def __init__(self):
         self.message = "Invalid Key Length \nAES128 key length must be 16 bytes only"
@@ -126,7 +190,6 @@ for row in state1:
 
 
 
-'''
 state1 = [0x47, 0x40, 0xa3, 0x4c,
           0x37, 0xd4, 0x70, 0x9f,
           0x94, 0xe4, 0x3a, 0x42,
