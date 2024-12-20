@@ -80,9 +80,6 @@ elif flag == "-d":
     with open(newfile, "wb") as file:  #'wb' opens file; Write-Binary mode
         file.write(decrypted_data)
     print(colored("Decrypted Data -> ","light_green"), newfile)
-    # OPTION - Delete Source File
-    option = input(colored("Delete Encrypted File? Y/N \n->","light_red"))
-    if option == "Y":
-        os.remove(filename)
-        print(colored("File removed successfully","light_green"))
-        #print(colored("Be sure to remove padded data","light_yellow"))
+    os.remove(filename)
+    print(colored("Encrypted file removed successfully","light_green"))
+    #print(colored("Be sure to remove padded data","light_yellow"))

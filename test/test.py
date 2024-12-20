@@ -22,9 +22,8 @@ class AES:
                             'ba 78 25 2e 1c a6 b4 c6 e8 dd 74 1f 4b bd 8b 8a' \
                             '70 3e b5 66 48 03 f6 0e 61 35 57 b9 86 c1 1d 9e' \
                             'e1 f8 98 11 69 d9 8e 94 9b 1e 87 e9 ce 55 28 df' \
-                            '8c a1 89 0d bf e6 42 68 41 99 2d 0f b0 54 bb 16'
+                            '8c a1 89 0d bf e6 42 68 41 99 2d 0f b0 54 bb 16'.replace(" ","")
         
-        self.s_box_string = self.s_box_string.replace(" ","")
         self.s_box = bytearray.fromhex(self.s_box_string)
 
     def bytes_from_state(self, state: list[list[int]]) -> bytes:
@@ -33,7 +32,7 @@ class AES:
         
 
     def state_from_bytes(self, data: bytes) -> list[list[int]]:
-        state = [data[i*4:(i+1)*4] for i in range(len(data) // 4)]
+        state = [(data[i*4:(i+1)*4]) for i in range(len(data) // 4)]
         return state
 
     def sub_word(self, word: list[int]) -> list[int]:
@@ -41,7 +40,7 @@ class AES:
         return substituted_word
     
     def rot_word(self, word: list) -> list:
-        word = word[1:] + word[-1]
+        word = word[1:] + word[:1]
         return word
     
 
@@ -50,9 +49,9 @@ class AES:
 
 
     # round constant
-    def rcon(i: int) -> bytes:
+    def rcon(self, i: int) -> bytes:
          rcon_lookup = bytearray.fromhex("01020408102040801B36")
-         rcon_value = bytes(rcon_lookup[i-1], 0, 0 ,0)
+         rcon_value = bytes([rcon_lookup[i-1], 0, 0 ,0])
          return rcon_value
     
 
@@ -66,13 +65,13 @@ class AES:
         for i in range(nk, nb * (nr + 1)):
             temp = w[i-1]
             if i % nk == 0:
-                temp = self.xor_bytes(self.sub_word(self.rot_word(temp)), self.rcon(i // nk))
+                temp = self.xor_bytes(self.sub_word(self.rot_word(temp)), self.rcon((i//nk)))
             elif nk > 6 and i % nk == 4:
                 temp = self.sub_word(temp)
             word_i = self.xor_bytes(w[i-nk], temp)
             w.append(word_i)
 
-        return [w[i*4:(i+1)*4] for i in range(len(w // 4))]
+        return [w[i*4:(i+1)*4] for i in range(len(w) // 4)]
 
     #-----------------------------------------------------------------------------#
     def add_round_key(self, state:list[list[int]], key_schedule: list[list[int]], round: int):
@@ -86,28 +85,40 @@ class AES:
 
     def sub_bytes(self, state: list[list[int]]):
         for r in range(len(state)):
-            state[r] = [self.s_box[r][c] for c in range(len(state[0]))]
-        
+            new_row = b''
+            for c in range(len(state[0]) // 2):
+                i = r+c
+                print(i)
+                #new_row += bytes(self.s_box[i])
+            state[r] = new_row
         return state
 
     def shift_rows(self, state: list[list[int]]):
 
-        state[0][1], state[1][1], state[2][1], state[3][1] = state[1][1], state[2][1], state[3][1], state[0][1] 
+        state[1][0], state[1][1], state[1][2], state[1][3] = state[1][1], state[1][2], state[1][3], state[1][0] 
                 
-        state[0][2], state[1][2], state[2][2], state[3][2] = state[2][2], state[3][2], state[0][2], state[1][2] 
+        state[2][0], state[2][1], state[2][2], state[2][3] = state[2][2], state[2][3], state[2][0], state[2][1] 
 
-        state[0][3], state[1][3], state[2][3], state[3][3] = state[3][3], state[0][3], state[1][3], state[2][3] 
+        state[3][0], state[3][1], state[3][2], state[3][3] = state[3][3], state[3][0], state[3][1], state[3][2] 
 
 
-    def mix_columns(self, state):
-        pass
+    def mix_columns(self, state: list[list[int]]):
+        for c in range(len(state[0])):
+            state[0][c] = (2*state[0][c]) ^ (3*state[1][c]) ^ state[2][c] ^ state[3][c]
+            state[1][c] = state[0][c] ^ (2*state[1][c]) ^ (3*state[2][c]) ^ state[3][c]
+            state[2][c] = state[0][c] ^ state[1][c] ^ (2*state[2][c]) ^ (3*state[3][c])
+            state[3][c] = (3*state[0][c]) ^ state[1][c] ^ state[2][c] ^ (2*state[2][c])
+
     #------------------------------------------------------------------------------#
 
     def encrypt(self, plaintext: bytes, key: bytes) -> bytes:
         
-        state = self.state_from_bytes(None)
+        state = self.state_from_bytes(plaintext)
 
         num_of_rounds = -1
+
+        key_length = len(key) * 8
+
         if key_length == 128:
             num_of_rounds = 10
         elif key_length == 192:
@@ -119,7 +130,8 @@ class AES:
         
 
 
-        key_schedule = self.key_expansion(key, num_of_rounds)
+        key_schedule = self.key_expansion(key=key, nr=num_of_rounds)
+
 
         self.add_round_key(state, key_schedule, round=0)
         
@@ -140,12 +152,14 @@ class AES:
         self.add_round_key(state, key_schedule, round=num_of_rounds)
 
         
-        ciphertext = self.bytes_from_state(None)
+        ciphertext = self.bytes_from_state(state)
 
         return ciphertext
 
 
 if __name__ == "__main__":
+
+
 
     # NIST AES-128 test C1.
     plaintext = bytearray.fromhex("00112233445566778899aabbccddeeff")
@@ -153,6 +167,7 @@ if __name__ == "__main__":
     expected_ciphertext = bytearray.fromhex("69c4e0d86a7b0430d8cdb78070b4c55a")
     aes_cipher = AES()
     ciphertext = aes_cipher.encrypt(plaintext, key)
+    print(ciphertext," | ", expected_ciphertext)
 
     assert (ciphertext == expected_ciphertext)
 
@@ -178,10 +193,6 @@ if __name__ == "__main__":
     ciphertext = aes_cipher.encrypt(plaintext, key)
 
     assert (ciphertext == expected_ciphertext)
-
-
-
-
 
 '''
 
