@@ -41,11 +41,12 @@ key = key.encode("utf-8")  # Encode key to binary data
 if flag == "-e":
     with open(filename, "rb") as file:  #'rb' opens file; -Read-Binary mode
         data = file.read()
+    hash = hashlib.sha256(key).hexdigest() #key is already encoded to utf-8s     # Hash Key and store to new text file
+    key_hash_filename = filename[:-4] + "keyHash.txt"
+    print(colored("HASH -> ","light_green"), hash)
     del_option = input(colored("Delete Unencrypted File? Y/N \n ->","light_red"))
     if del_option == "Y":
         os.remove(filename)  # remove sensitive unencrypted file
-    hash = hashlib.sha256(key).hexdigest() #key is already encoded to utf-8s     # Hash Key and store to new text file
-    key_hash_filename = filename[:-4] + "keyHash.txt"
     with open(key_hash_filename,'w') as key_hash_file:
         key_hash_file.write(hash)
     # Instance of Cipher
